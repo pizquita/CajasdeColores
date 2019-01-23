@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorPalomo">#d0831bd8</color>
+    <color name="colorPollito">#f98603</color>
+    <color name="colorGris">#bf5d5964</color>
+    <color name="colorAzul">#bf008cff</color>
+    <color name="colorRojo">#bfef0202</color>
+    <color name="colorBlanco">#fff</color>
+    <color name="tocado">#000</color>
+</resources>
