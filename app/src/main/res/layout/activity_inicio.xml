@@ -18,10 +18,11 @@
 
     <EditText
         android:id="@+id/editUsuario"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:layout_width="202dp"
+        android:layout_height="66dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="30dp"
+        android:hint="Nombre" />
 
     <Button
         android:id="@+id/bttSend"
@@ -32,4 +33,5 @@
         android:text="Listo!"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:onClick="guardaUsuario"/>
+
 </LinearLayout>

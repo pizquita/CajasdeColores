@@ -3,16 +3,23 @@ package basico.android.cftic.edu.cajasdecolores;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+/**
+ * Clase deonde almacenamos datos en las prefencias de la aplicación
+ * Las Preferences son un fichero XML donde asocia clave-valor
+ * */
 public class AlmacenaTiempos {
 
     //Declaramos las variables
-    public final static String USUARIO = "NombreUsuario";
+    public final static String USUARIO = "Nombre";
     public final static String TIEMPO = "Tiempo";
-    public final static String FICHERO = "Marcas";
+    public final static String FICHERO = "marcas"; //Nombre del Fichero
+    public final static String PUNTUACION = "Puntuacion";
+    public static String ID = "0";
+    public final static String ULTIMO_ID = "0";
 
 
     /**
-     * Método que devuelve el valor del usuario
+     * Método que devuelve el valor del usuario, si no hay usuario por defecto devuelve ""
      * */
     public static String getUsuario(Context contex)
     {
@@ -23,14 +30,14 @@ public class AlmacenaTiempos {
     }
 
     /**
-     * Método que devuelve el tiempo
+     * Método que devuelve el tiempo, si no hay tiempo guardado devuelve ""
      * */
-    public static String getTiempo(Context cont)
+    public static long getTiempo(Context cont)
     {
 
-        String tmp = null;
+        long tmp = 0;
         SharedPreferences pref = cont.getSharedPreferences(FICHERO, cont.MODE_PRIVATE);
-        tmp = pref.getString(AlmacenaTiempos.TIEMPO,"");
+        tmp = pref.getLong(AlmacenaTiempos.TIEMPO,0);
         return  tmp;
     }
 
@@ -48,13 +55,47 @@ public class AlmacenaTiempos {
     /**
      * Método que modifica el tiempo
      * */
-    public static void setTiempo(String tiempo ,Context c)
+    public static void setTiempo(long tiempo ,Context c)
     {
         SharedPreferences preferences = c.getSharedPreferences(FICHERO,c.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
 
-        editor.putString(AlmacenaTiempos.TIEMPO,tiempo);
+        editor.putLong(AlmacenaTiempos.TIEMPO,tiempo);
         editor.commit();
+    }
+
+    /**
+     * Método que limpia las preferences de la aplicación
+     * */
+    public static void LimpiaPreferences(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(FICHERO,context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear().commit();
+    }
+
+
+    public static void setPuntuacion(String puntuación,Context context,String id)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(FICHERO,context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();//objeto de tipo Editor para modificar el fichero
+        editor.putString(id,puntuación);
+        editor.commit();
+    }
+
+    public static void setUltimoId(int ultimoId,Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences(FICHERO,context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(ULTIMO_ID,ultimoId);
+        editor.commit();
+    }
+    public static int getUltimoId(Context cont)
+    {
+        int ultimo_id = 0;
+        SharedPreferences pref = cont.getSharedPreferences(FICHERO, cont.MODE_PRIVATE);
+        ultimo_id = pref.getInt(ULTIMO_ID,0);
+        return  ultimo_id;
     }
 
 }

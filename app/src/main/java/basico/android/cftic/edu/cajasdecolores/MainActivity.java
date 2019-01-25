@@ -8,28 +8,43 @@ import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private int t;
     private int color;
+    private String usuario;
+    private Object tag;
+    private long lng_puntuacion;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        usuario = getIntent().getStringExtra("USUARIO");
+
+
+        //Inicializamos las variables de clase
         t = 0;
+        lng_puntuacion = 0;
         color = getResources().getColor(R.color.tocado);
+
+
         //Leemos el record
-        String tmp = null;
-        tmp = AlmacenaTiempos.getTiempo(this.getApplicationContext());//vale con poner this
-        Log.d("MIAPP","Record actual: "+tmp);
+        //String tmp = null;
+        //tmp = AlmacenaTiempos.getTiempo(this.getApplicationContext());//vale con poner this
+        //Log.d("MIAPP","Record actual: "+tmp);
     }
 
     /**
@@ -54,34 +69,52 @@ public class MainActivity extends AppCompatActivity {
      * */
     public void cambiaColor(View vista)
     {
-        ColorDrawable viewColor = (ColorDrawable) vista.getBackground();//recogemos el color del layout que se ha pulsado
-        int colorId = viewColor.getColor();
+        //ColorDrawable viewColor = (ColorDrawable) vista.getBackground();//recogemos el color del layout que se ha pulsado
+        //int colorId = viewColor.getColor();
 
-        Object tag = vista.getTag();
+        //Tag recibe como parametro un objeto de tipo Object
+        tag = vista.getTag();
 
         if(tag == null)
         {
+
             this.t++;
-            vista.setTag(true);
+            vista.setTag(true);//añadimos una etiqueta para saber que este Linear ya se ha cambiado de color
             //vista.setVisibility(View.INVISIBLE);//Va combinando los layouts y queda muy gracioso!!!
             vista.setBackgroundColor(color);
+
         }
 
         if(t == 12)
         {
             Chronometer c = (Chronometer) findViewById(R.id.chronometer1);
             c.stop();//Paramos el temporizado
-            long time = c.getBase();
-            String tmp = c.getContentDescription().toString();//recogemos el nuevo tiempo del cronometro y lo grabamos
-            grabaRegistro(tmp);
+            lng_puntuacion = c.getBase();//recogemos el nuevo tiempo del cronometro y lo grabamos
+            grabarPuntuacion(lng_puntuacion);
             cerrar();
         }
     }
 
-    private void grabaRegistro(String tmp)
+    private void grabarPuntuacion(long lng_tiempo)
     {
-        Log.d("MIAPP",tmp);
-        AlmacenaTiempos.setTiempo(tmp,this.getApplicationContext());//basta con poner this
+        int id = 0;
+        id = AlmacenaTiempos.getUltimoId(this);
+
+        if(id == 0)
+        {
+            id = 1;
+        }
+        else{
+            id++;
+        }
+        //Convertimos a JSON el valor usuario - tiempo
+        Gson gson = new Gson();
+        Puntuacion puntuacion = new Puntuacion(usuario,lng_tiempo,id);//Objeto puntuación para pasarselo a la clase GSON
+
+
+        String srz_puntuacion = gson.toJson(puntuacion);//Devuelve un objeto serializado
+        AlmacenaTiempos.setPuntuacion(srz_puntuacion,this,String.valueOf(id));//Grabamos el registro
+        AlmacenaTiempos.setUltimoId(id,this);
     }
 
 
@@ -90,14 +123,16 @@ public class MainActivity extends AppCompatActivity {
      * */
     private void cerrar()
     {
-        String tmp = null;
-        tmp = AlmacenaTiempos.getTiempo(this.getApplicationContext()); //leemos el registro que hemos almacenado para mostrarlo en el mensaje
-
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
-            Toast.makeText(getApplicationContext(), "Tu tiempo "+ tmp, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Tu tiempo "+ lng_puntuacion, Toast.LENGTH_SHORT).show();
             this.finishAffinity();//cierra la aplicación
         } else{
             super.onBackPressed();//Lo que haga el padre en su caso
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
     }
 }
