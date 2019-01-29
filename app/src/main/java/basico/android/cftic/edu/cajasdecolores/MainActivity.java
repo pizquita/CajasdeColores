@@ -5,17 +5,25 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+
+import java.util.zip.Inflater;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private String usuario;
     private Object tag;
     private long lng_puntuacion;
+    private  final int returncode=305;
+
 
 
     @Override
@@ -32,19 +42,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        usuario = getIntent().getStringExtra("USUARIO");
-
 
         //Inicializamos las variables de clase
+        usuario = getIntent().getStringExtra("USUARIO");
+        ((TextView)findViewById(R.id.nombre)).setText(usuario);
         t = 0;
         lng_puntuacion = 0;
         color = getResources().getColor(R.color.tocado);
+        findViewById(R.id.start).setTag(null);
 
-
-        //Leemos el record
-        //String tmp = null;
-        //tmp = AlmacenaTiempos.getTiempo(this.getApplicationContext());//vale con poner this
-        //Log.d("MIAPP","Record actual: "+tmp);
+        //Modificar la barra para añadir la flecha de vuelta  atrás
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     /**
@@ -52,9 +61,11 @@ public class MainActivity extends AppCompatActivity {
      * */
     public void ocultarBoton (View boton)
     {
+
         //TODO ocultar o quitar el botón
-        //boton.setVisibility(View.INVISIBLE);// oculta el botón
-        boton.setVisibility(View.GONE);
+
+        boton.setTag(true);//Etiqueta para controlar que se pulsa el boton y no dejar cambiar el color de las capas
+        boton.setVisibility(View.GONE);//Propiedad que "elimina" el boton
 
         //Un temporizador creado en XML, inicializamos el cronometro a 0 y empieza a contar
         Chronometer c = (Chronometer) findViewById(R.id.chronometer1);
@@ -69,29 +80,26 @@ public class MainActivity extends AppCompatActivity {
      * */
     public void cambiaColor(View vista)
     {
-        //ColorDrawable viewColor = (ColorDrawable) vista.getBackground();//recogemos el color del layout que se ha pulsado
-        //int colorId = viewColor.getColor();
 
-        //Tag recibe como parametro un objeto de tipo Object
-        tag = vista.getTag();
+        if(findViewById(R.id.start).getTag() != null) {
+            //Tag recibe como parametro un objeto de tipo Object
+            tag = vista.getTag();
+            if (tag == null) {
 
-        if(tag == null)
-        {
+                this.t++;
+                vista.setTag(true);//añadimos una etiqueta para saber que este Linear ya se ha cambiado de color
+                //vista.setVisibility(View.INVISIBLE);//Va combinando los layouts y queda muy gracioso!!!
+                vista.setBackgroundColor(color);
 
-            this.t++;
-            vista.setTag(true);//añadimos una etiqueta para saber que este Linear ya se ha cambiado de color
-            //vista.setVisibility(View.INVISIBLE);//Va combinando los layouts y queda muy gracioso!!!
-            vista.setBackgroundColor(color);
+            }
 
-        }
-
-        if(t == 12)
-        {
-            Chronometer c = (Chronometer) findViewById(R.id.chronometer1);
-            c.stop();//Paramos el temporizado
-            lng_puntuacion = c.getBase();//recogemos el nuevo tiempo del cronometro y lo grabamos
-            grabarPuntuacion(lng_puntuacion);
-            cerrar();
+            if (t == 12) {
+                Chronometer c = (Chronometer) findViewById(R.id.chronometer1);
+                c.stop();//Paramos el temporizado
+                lng_puntuacion = c.getBase();//recogemos el nuevo tiempo del cronometro y lo grabamos
+                grabarPuntuacion(lng_puntuacion);
+                cerrar();
+            }
         }
     }
 
@@ -133,6 +141,45 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * Metodo llamado al pulsar una opción del menú
+     * */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.cambiausu:
+                Intent i =  new Intent(this, Inicio.class);
+                i.putExtra("DEVUELTA",true);
+                startActivityForResult(i,returncode);
+                break;
+            case android.R.id.home:
+                Log.d("MIAPP", "Tocó ir hacia atrás");
+                super.onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+
+    /**
+     * Método llamado cuando retorna de lanzar Intent con la opción startActivityForResult
+     * */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        if(requestCode == returncode)
+        {
+            if(resultCode == RESULT_OK)
+            {
+                usuario = data.getStringExtra("USUARIO");
+                ((TextView)findViewById(R.id.nombre)).setText(usuario);
+            }
+        }
     }
 }
