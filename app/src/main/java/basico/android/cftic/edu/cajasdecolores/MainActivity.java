@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,7 +21,7 @@ import android.widget.Chronometer;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.support.design.widget.Snackbar;
 import com.google.gson.Gson;
 
 import java.util.zip.Inflater;
@@ -49,23 +50,28 @@ public class MainActivity extends AppCompatActivity {
         t = 0;
         lng_puntuacion = 0;
         color = getResources().getColor(R.color.tocado);
-        findViewById(R.id.start).setTag(null);
+        findViewById(R.id.playbutton).setTag(null);
 
         //Modificar la barra para añadir la flecha de vuelta  atrás
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setSubtitle(usuario);//Ponemos un texto en la barra de título
+        getSupportActionBar().hide();
+        getSupportActionBar().setDisplayShowTitleEnabled(false);//Oculta el texto de la barra
+
+
     }
 
     /**
      * Método que oculta el botón al pulsarlo
      * */
-    public void ocultarBoton (View boton)
+    public void star (View play)
     {
 
         //TODO ocultar o quitar el botón
 
-        boton.setTag(true);//Etiqueta para controlar que se pulsa el boton y no dejar cambiar el color de las capas
-        boton.setVisibility(View.GONE);//Propiedad que "elimina" el boton
+        play.setTag(true);//Etiqueta para controlar que se pulsa el boton y no dejar cambiar el color de las capas
+        play.setVisibility(View.INVISIBLE);//Propiedad que "elimina" el boton
 
         //Un temporizador creado en XML, inicializamos el cronometro a 0 y empieza a contar
         Chronometer c = (Chronometer) findViewById(R.id.chronometer1);
@@ -81,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     public void cambiaColor(View vista)
     {
 
-        if(findViewById(R.id.start).getTag() != null) {
+        if(findViewById(R.id.playbutton).getTag() != null) {
             //Tag recibe como parametro un objeto de tipo Object
             tag = vista.getTag();
             if (tag == null) {
@@ -132,7 +138,13 @@ public class MainActivity extends AppCompatActivity {
     private void cerrar()
     {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
-            Toast.makeText(getApplicationContext(), "Tu tiempo "+ lng_puntuacion, Toast.LENGTH_SHORT).show();
+
+            FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.playbutton);
+           // fab.setOnClickListener(new ListenerFAB());
+
+            Snackbar.make(fab,"Tu tiempo "+ lng_puntuacion,Snackbar.LENGTH_INDEFINITE).show();
+
+            //Toast.makeText(getApplicationContext(), "Tu tiempo "+ lng_puntuacion, Toast.LENGTH_SHORT).show();
             this.finishAffinity();//cierra la aplicación
         } else{
             super.onBackPressed();//Lo que haga el padre en su caso

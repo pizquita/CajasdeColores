@@ -6,7 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:id="@+id/general">
 <LinearLayout
     android:id="@+id/superior"
     android:layout_width="match_parent"
@@ -187,7 +188,7 @@
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
-    <Button
+    <!--Button
         android:id="@+id/start"
         android:layout_width="150dp"
         android:layout_height="150dp"
@@ -195,6 +196,24 @@
         android:gravity="center"
         android:layout_gravity="center"
         android:onClick="ocultarBoton"
-        />
+        /-->
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/playbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="40dp"
+        android:elevation="6dp"
+        android:src="@drawable/play"
+        android:onClick="star">
+    </android.support.design.widget.FloatingActionButton>
+    <android.support.design.widget.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/navigate"
+        android:visibility="gone">
+
+    </android.support.design.widget.BottomNavigationView>
 </FrameLayout>
