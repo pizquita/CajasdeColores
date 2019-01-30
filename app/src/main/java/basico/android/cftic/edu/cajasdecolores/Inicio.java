@@ -108,7 +108,7 @@ public class Inicio extends AppCompatActivity {
         if (requestCode == FOTO_OK && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");//Recogemos la imagen en un bitmap
-            ((ImageView)( findViewById(R.id.img_foto))).setImageBitmap(imageBitmap);
+            ((ImageView)( findViewById(R.id.imageView))).setImageBitmap(imageBitmap);
         }
     }
 }

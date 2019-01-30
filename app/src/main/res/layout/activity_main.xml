@@ -197,7 +197,26 @@
         android:layout_gravity="center"
         android:onClick="ocultarBoton"
         /-->
-
+    <LinearLayout
+        android:id="@+id/lnOpciones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:visibility="invisible">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/refresh_white_36dp"
+            android:onClick="jugardenuevo"
+            android:padding="8dp"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/close_white_36dp"
+            android:onClick="salir"
+            android:padding="8dp"/>
+    </LinearLayout>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/playbutton"
         android:layout_width="wrap_content"

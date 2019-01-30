@@ -3,6 +3,8 @@ package basico.android.cftic.edu.cajasdecolores;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 c.stop();//Paramos el temporizado
                 lng_puntuacion = c.getBase();//recogemos el nuevo tiempo del cronometro y lo grabamos
                 grabarPuntuacion(lng_puntuacion);
+                findViewById(R.id.lnOpciones).setVisibility(View.VISIBLE);
                 cerrar();
             }
         }
@@ -145,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
             Snackbar.make(fab,"Tu tiempo "+ lng_puntuacion,Snackbar.LENGTH_INDEFINITE).show();
 
             //Toast.makeText(getApplicationContext(), "Tu tiempo "+ lng_puntuacion, Toast.LENGTH_SHORT).show();
-            this.finishAffinity();//cierra la aplicación
+            //this.finishAffinity();//cierra la aplicación
         } else{
             super.onBackPressed();//Lo que haga el padre en su caso
         }
@@ -193,5 +196,22 @@ public class MainActivity extends AppCompatActivity {
                 ((TextView)findViewById(R.id.nombre)).setText(usuario);
             }
         }
+    }
+
+    public void jugardenuevo(View view) {
+
+        recreate();//reinicia la actividad
+    }
+
+    public void salir(View view) {
+
+        sonidoFinal();
+        finishAffinity();//cierra        intent.setDataAndType(Uri.parse(), "audio/*");
+
+    }
+    public void sonidoFinal()
+    {
+        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.navigate);
+        mediaPlayer.start();
     }
 }
